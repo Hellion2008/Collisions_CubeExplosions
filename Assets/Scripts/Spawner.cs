@@ -1,20 +1,19 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
     private const int MinCountCubes = 2;
     private const int MaxCountCubes = 6;
-    private const float ChangingChanceScale = 0.5f;
 
     [SerializeField, Min(MinCountCubes)] private int _lowLimitCountCubes;
     [SerializeField] private int _highLimitCountCubes = MaxCountCubes;
     [SerializeField] private GameObject _prefab;
     [SerializeField] private float _scaleCube = 0.5f;
-    [SerializeField] private float _chance = 1f;
-    [SerializeField] private float _explosionRadius;
-    [SerializeField] private float _explosionForce;
+
+    public List<Rigidbody> Cubes => GetRigidbodyCubes(
+        transform.position,
+        UserUtils.GenerateRandomCount(_lowLimitCountCubes, _highLimitCountCubes));
 
     private void OnValidate()
     {
@@ -30,17 +29,19 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    private void OnMouseUpAsButton()
+    public void SpawnCubes()
     {
-        if (canSpawn())
+        for (int i = 0; i < Cubes.Count; i++)
         {
-            SpawnCubes(transform.position, UserUtils.GenerateRandomCount(_lowLimitCountCubes, _highLimitCountCubes));
-        }
+            GameObject cube = Instantiate(_prefab, Cubes[0].transform.position, transform.rotation);
+            cube.transform.localScale *= _scaleCube;
 
-        Destroy(gameObject);
+            ChanceSpawn chanceSpawn = cube.GetComponent<ChanceSpawn>();
+            chanceSpawn.ChangeChance();
+        }
     }
 
-    private void SpawnCubes(Vector3 spawnPositionTransform, int countCubes)
+    private List<Rigidbody> GetRigidbodyCubes(Vector3 spawnPositionTransform, int countCubes)
     {
         List<Rigidbody> spawnObjects = new List<Rigidbody>();
 
@@ -49,43 +50,10 @@ public class Spawner : MonoBehaviour
             var offsetX = gameObject.transform.localScale.x * _scaleCube;
             spawnPositionTransform.x += offsetX;
 
-            GameObject cube = Instantiate(_prefab, spawnPositionTransform, transform.rotation);
-            cube.transform.localScale *= _scaleCube;
-
-            Spawner instantiateCube = cube.GetComponent<Spawner>();
-            instantiateCube._chance = _chance * ChangingChanceScale;
-
-            Rigidbody instantiateCubeRigidbody = cube.GetComponent<Rigidbody>();
+            Rigidbody instantiateCubeRigidbody = GetComponent<Rigidbody>();
             spawnObjects.Add(instantiateCubeRigidbody);
         }
 
-        Explode(spawnObjects, new Vector3(
-            CalculatePositionX(spawnObjects), spawnPositionTransform.y, spawnPositionTransform.z));
-    }
-
-    private bool canSpawn()
-    {
-        float randomChance = UserUtils.GenerateRandomFloat();
-        return randomChance < _chance;
-    }
-
-    private void Explode(List<Rigidbody> cubes, Vector3 position)
-    {
-        foreach (Rigidbody cube in cubes)
-        {
-            cube.AddExplosionForce(_explosionForce, position, _explosionRadius);
-        }
-    }
-
-    private float CalculatePositionX(List<Rigidbody> spawnObjects)
-    {
-        float sumX = 0f;
-
-        foreach (Rigidbody cube in spawnObjects)
-        {
-            sumX += cube.position.x;
-        }
-
-        return sumX / spawnObjects.Count;
+        return spawnObjects;
     }
 }

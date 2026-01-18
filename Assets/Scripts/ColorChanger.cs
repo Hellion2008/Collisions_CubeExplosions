@@ -17,7 +17,7 @@ public class ColorChanger : MonoBehaviour
             float r = UserUtils.GenerateRandomFloat();
             float g = UserUtils.GenerateRandomFloat();
             float b = UserUtils.GenerateRandomFloat();
-            _renderer.materials[0].color = new UnityEngine.Color(r, g, b);
+            _renderer.materials[0].color = new Color(r, g, b);
         }
     }
 }
