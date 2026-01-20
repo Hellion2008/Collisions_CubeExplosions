@@ -3,41 +3,34 @@ using UnityEngine;
 
 public class Raycaster : MonoBehaviour
 {
-    private const string TagCube= "Interactable";
-
+    [SerializeField] private float _maxDistanceRay = 1000;
     [SerializeField] private InputReader _inputReader;
+    [SerializeField] private Camera _camera;
 
-    private Camera _camera;
     private Ray _ray;
 
-    public event Action ClickedOnCube;
+    public event Action<GameObject> GetIntoCube;
 
     private void OnEnable()
     {
-        _inputReader.OnClicked += FindSomeCube;
-    }
-
-    private void Start()
-    {
-        _camera = FindFirstObjectByType<Camera>();
+        _inputReader.OnClicked += PointSomeCube;
     }
 
     private void OnDisable()
     {
-        _inputReader.OnClicked -= FindSomeCube;
+        _inputReader.OnClicked -= PointSomeCube;
     }
 
-    private void FindSomeCube()
+    private void PointSomeCube(Vector3 cubePosition)
     {
-        _ray = _camera.ScreenPointToRay(Input.mousePosition);
+        _ray = _camera.ScreenPointToRay(cubePosition);
 
-        if(Physics.Raycast(_ray, out RaycastHit hit, Mathf.Infinity))
+        if (Physics.Raycast(_ray, out RaycastHit hit, _maxDistanceRay))
         {
-            if (hit.collider.CompareTag(TagCube))
+            if (hit.collider.TryGetComponent<Cube>(out Cube cube))
             {
-                ClickedOnCube?.Invoke();
+                GetIntoCube?.Invoke(cube.gameObject);
             }
-
         }
     }
 }

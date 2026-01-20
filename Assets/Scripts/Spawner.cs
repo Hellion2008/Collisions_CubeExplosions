@@ -5,15 +5,11 @@ public class Spawner : MonoBehaviour
 {
     private const int MinCountCubes = 2;
     private const int MaxCountCubes = 6;
+    private const float ScaleCube = 0.5f;
 
     [SerializeField, Min(MinCountCubes)] private int _lowLimitCountCubes;
     [SerializeField] private int _highLimitCountCubes = MaxCountCubes;
     [SerializeField] private GameObject _prefab;
-    [SerializeField] private float _scaleCube = 0.5f;
-
-    public List<Rigidbody> Cubes => GetRigidbodyCubes(
-        transform.position,
-        UserUtils.GenerateRandomCount(_lowLimitCountCubes, _highLimitCountCubes));
 
     private void OnValidate()
     {
@@ -29,31 +25,35 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    public void SpawnCubes()
+    public List<GameObject> SpawnCubes(GameObject prefab)
     {
-        for (int i = 0; i < Cubes.Count; i++)
-        {
-            GameObject cube = Instantiate(_prefab, Cubes[0].transform.position, transform.rotation);
-            cube.transform.localScale *= _scaleCube;
+        List<GameObject> spawnObjects = new List<GameObject>();
+        int countCubes = Random.Range(_lowLimitCountCubes, _highLimitCountCubes);
 
-            ChanceSpawn chanceSpawn = cube.GetComponent<ChanceSpawn>();
-            chanceSpawn.ChangeChance();
-        }
-    }
-
-    private List<Rigidbody> GetRigidbodyCubes(Vector3 spawnPositionTransform, int countCubes)
-    {
-        List<Rigidbody> spawnObjects = new List<Rigidbody>();
+        float positionX = prefab.transform.position.x;
 
         for (int i = 0; i < countCubes; i++)
         {
-            var offsetX = gameObject.transform.localScale.x * _scaleCube;
-            spawnPositionTransform.x += offsetX;
+            GameObject cube = Instantiate(
+                prefab, 
+                new Vector3 (positionX, prefab.transform.position.y, prefab.transform.position.z),
+                Quaternion.identity);
+            cube.transform.localScale *= ScaleCube;
 
-            Rigidbody instantiateCubeRigidbody = GetComponent<Rigidbody>();
-            spawnObjects.Add(instantiateCubeRigidbody);
+            Cube chanceSpawn = cube.GetComponent<Cube>();
+            chanceSpawn.ChangeChance();
+
+            spawnObjects.Add(cube);
+
+            var offsetX = cube.transform.localScale.x * ScaleCube;
+            positionX += offsetX;
         }
 
         return spawnObjects;
+    }
+
+    public void DestroyParentCube(Cube cube)
+    {
+        Destroy(cube.gameObject);
     }
 }

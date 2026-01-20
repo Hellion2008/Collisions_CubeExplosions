@@ -3,10 +3,15 @@ using UnityEngine;
 
 public class InputReader : MonoBehaviour
 {
-    public event Action OnClicked;
+    private const int ButtonClickToCube = 0;
 
-    private void OnMouseUpAsButton()
+    public event Action<Vector3> OnClicked;
+
+    private void Update()
     {
-        OnClicked?.Invoke();
+        if (Input.GetMouseButtonDown(ButtonClickToCube))
+        {
+            OnClicked?.Invoke(Input.mousePosition);
+        }
     }
 }

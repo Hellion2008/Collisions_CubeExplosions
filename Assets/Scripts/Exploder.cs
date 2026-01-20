@@ -7,32 +7,31 @@ public class Exploder : MonoBehaviour
     [SerializeField] private float _explosionForce;
     
     private Spawner _spawner;
-    private ChanceSpawn _chanceSpawn;
 
     private void Start()
     {
         _spawner = GetComponent<Spawner>();
-        _chanceSpawn = GetComponent<ChanceSpawn>();
     }
 
-    public void Explode(List<Rigidbody> cubes)
+    public void Explode(List<GameObject> cubes)
     {
-        foreach (Rigidbody cube in cubes)
+        foreach (GameObject cube in cubes)
         {
-            cube.AddExplosionForce(
-                _explosionForce, 
-                new Vector3 (CalculatePositionX(_spawner.Cubes), transform.position.y, transform.position.z), 
+            Rigidbody cubeRigidbody = cube.GetComponent<Rigidbody>();
+            cubeRigidbody.AddExplosionForce(
+                _explosionForce,
+                new Vector3(CalculatePositionX(cubes), cube.transform.position.y, cube.transform.position.z),
                 _explosionRadius);
         }
     }
 
-    private float CalculatePositionX(List<Rigidbody> spawnObjects)
+    private float CalculatePositionX(List<GameObject> spawnObjects)
     {
         float sumX = 0f;
 
-        foreach (Rigidbody cube in spawnObjects)
+        foreach (GameObject cube in spawnObjects)
         {
-            sumX += cube.position.x;
+            sumX += cube.transform.position.x;
         }
 
         return sumX / spawnObjects.Count;
