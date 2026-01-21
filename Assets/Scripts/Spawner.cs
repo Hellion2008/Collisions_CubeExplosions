@@ -9,7 +9,6 @@ public class Spawner : MonoBehaviour
 
     [SerializeField, Min(MinCountCubes)] private int _lowLimitCountCubes;
     [SerializeField] private int _highLimitCountCubes = MaxCountCubes;
-    [SerializeField] private GameObject _prefab;
 
     private void OnValidate()
     {
@@ -25,34 +24,34 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    public List<GameObject> SpawnCubes(GameObject prefab)
+    public List<Cube> SpawnCubes(Cube pointedCube)
     {
-        List<GameObject> spawnObjects = new List<GameObject>();
+        List<Cube> spawnObjects = new ();
         int countCubes = Random.Range(_lowLimitCountCubes, _highLimitCountCubes);
 
-        float positionX = prefab.transform.position.x;
+        float positionX = pointedCube.transform.position.x;
 
         for (int i = 0; i < countCubes; i++)
         {
-            GameObject cube = Instantiate(
-                prefab, 
-                new Vector3 (positionX, prefab.transform.position.y, prefab.transform.position.z),
+            Cube cube = Instantiate(
+                pointedCube, 
+                new Vector3 (positionX, pointedCube.transform.position.y, pointedCube.transform.position.z),
                 Quaternion.identity);
             cube.transform.localScale *= ScaleCube;
 
-            Cube chanceSpawn = cube.GetComponent<Cube>();
-            chanceSpawn.ChangeChance();
-
-            spawnObjects.Add(cube);
-
-            var offsetX = cube.transform.localScale.x * ScaleCube;
-            positionX += offsetX;
+            if (cube.TryGetComponent(out Cube chanceSpawn))
+            {
+                chanceSpawn.ChangeChance();
+                spawnObjects.Add(cube);
+                float offsetX = cube.transform.localScale.x * ScaleCube;
+                positionX += offsetX;
+            }
         }
 
         return spawnObjects;
     }
 
-    public void DestroyParentCube(Cube cube)
+    public void DestroyCube(Cube cube)
     {
         Destroy(cube.gameObject);
     }

@@ -9,27 +9,27 @@ public class Raycaster : MonoBehaviour
 
     private Ray _ray;
 
-    public event Action<GameObject> GetIntoCube;
+    public event Action<Cube> GetIntoCube;
 
     private void OnEnable()
     {
-        _inputReader.OnClicked += PointSomeCube;
+        _inputReader.ButtonClicked += PointSomeCube;
     }
 
     private void OnDisable()
     {
-        _inputReader.OnClicked -= PointSomeCube;
+        _inputReader.ButtonClicked -= PointSomeCube;
     }
 
-    private void PointSomeCube(Vector3 cubePosition)
+    private void PointSomeCube(Vector3 clickPointPosition)
     {
-        _ray = _camera.ScreenPointToRay(cubePosition);
+        _ray = _camera.ScreenPointToRay(clickPointPosition);
 
         if (Physics.Raycast(_ray, out RaycastHit hit, _maxDistanceRay))
         {
-            if (hit.collider.TryGetComponent<Cube>(out Cube cube))
+            if (hit.collider.TryGetComponent(out Cube cube))
             {
-                GetIntoCube?.Invoke(cube.gameObject);
+                GetIntoCube?.Invoke(cube);
             }
         }
     }

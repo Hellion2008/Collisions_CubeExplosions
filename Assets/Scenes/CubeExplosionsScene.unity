@@ -283,7 +283,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 504773620}
-  - component: {fileID: 504773619}
+  - component: {fileID: 504773621}
   m_Layer: 0
   m_Name: ParentCubeDestroyer
   m_TagString: Untagged
@@ -291,18 +291,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &504773619
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 504773618}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd794c99a66712a47af3017968a3055c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &504773620
 Transform:
   m_ObjectHideFlags: 0
@@ -318,6 +306,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &504773621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 504773618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd794c99a66712a47af3017968a3055c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spawner: {fileID: 1628519084}
+  _exploder: {fileID: 1491084639}
+  _raycaster: {fileID: 131068812}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -846,6 +849,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _explosionRadius: 20
   _explosionForce: 1000
+  _spawner: {fileID: 0}
 --- !u!1 &1597452617
 GameObject:
   m_ObjectHideFlags: 0

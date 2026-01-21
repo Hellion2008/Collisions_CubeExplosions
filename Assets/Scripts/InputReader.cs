@@ -5,13 +5,13 @@ public class InputReader : MonoBehaviour
 {
     private const int ButtonClickToCube = 0;
 
-    public event Action<Vector3> OnClicked;
+    public event Action<Vector3> ButtonClicked;
 
     private void Update()
     {
         if (Input.GetMouseButtonDown(ButtonClickToCube))
         {
-            OnClicked?.Invoke(Input.mousePosition);
+            ButtonClicked?.Invoke(Input.mousePosition);
         }
     }
 }
