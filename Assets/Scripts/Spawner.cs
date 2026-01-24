@@ -39,9 +39,9 @@ public class Spawner : MonoBehaviour
                 Quaternion.identity);
             cube.transform.localScale *= ScaleCube;
 
-            if (cube.TryGetComponent(out Cube chanceSpawn))
+            if (cube.TryGetComponent<Cube>(out _))
             {
-                chanceSpawn.ChangeChance();
+                cube.ChangeChance();
                 spawnObjects.Add(cube);
                 float offsetX = cube.transform.localScale.x * ScaleCube;
                 positionX += offsetX;

@@ -6,6 +6,7 @@ public class CubeLauncher : MonoBehaviour
     [SerializeField] private Spawner _spawner;
     [SerializeField] private Exploder _exploder;
     [SerializeField] private Raycaster _raycaster;
+    [SerializeField] private Explosion _explosion;
 
     private void OnEnable()
     {
@@ -26,8 +27,12 @@ public class CubeLauncher : MonoBehaviour
                 List<Cube> cubes = _spawner.SpawnCubes(pointedCube);
                 _exploder.Explode(cubes);
             }
+            else
+            {
+                _explosion.ExplodeAroundCube(pointedCube);
+            }
 
-            _spawner.DestroyCube(pointedCube);
+                _spawner.DestroyCube(pointedCube);
         }
     }
 }
